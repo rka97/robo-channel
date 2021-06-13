@@ -242,3 +242,37 @@
     (description
      "The package enhances LaTeXâ\x80\x99s cross-referencing features, allowing the format of references to be determined automatically according to the type of reference.  The formats used may be customised in the preamble of a document; babelbabel support is available (though the choice of languages remains limited: currently Danish, Dutch, English, French, German, Italian, Norwegian, Russian, Spanish and Ukranian).  The package also offers a means of referencing a list of references, each formatted according to its type.  In such lists, it can collapse sequences of numerically-consecutive labels to a reference range.")
   (license (license:fsf-free "file://cleveref.sty"))))
+
+(define-public texlive-latex-algorithmicx
+  (package
+    (name "texlive-latex-algorithmicx")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/algorithmicx"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "18afx332iizlsa2d3rzxgk09vi3dyg088jw2igyqdbvqmiibvma4"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/algorithmicx")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+    (home-page
+     "http://www.ctan.org/pkg/algorithmicx")
+    (synopsis
+     "The algorithmic style you always wanted")
+    (description
+     "Algorithmicx provides a flexible, yet easy to use, way for inserting good looking pseudocode or source code in your papers. It has built in support for Pseudocode, Pascal and C, and  offers powerful means to create definitions for any programming language. The user can adapt a Pseudocode style to his native language.")
+    (license (license:fsf-free "file://algorithmicx.sty"))))
