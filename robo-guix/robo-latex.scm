@@ -210,3 +210,35 @@
     (description
      "This package provides an environment for coloured and framed text boxes with a heading line.  Optionally, such a box may be split in an upper and a lower part; thus the package may be used for the setting of LaTeX examples where one part of the box displays the source code and the other part shows the output.  Another common use case is the setting of theorems.  The package supports saving and reuse of source code and text parts.  The package depends on the pgfpgf, verbatimverbatim, environenviron, and etoolboxetoolbox packages.")
   (license (license:fsf-free "file://tcolorbox.sty"))))
+
+(define-public texlive-latex-cleveref
+  (package
+    (name "texlive-latex-cleveref")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/cleveref"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "18afx332iizlsa2d3rzxgk09vi3dyg088jw2igyqdbvqmiibvma4"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/cleveref")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+    (home-page "http://www.ctan.org/pkg/cleveref")
+    (synopsis "Intelligent cross-referencing")
+    (description
+     "The package enhances LaTeXâ\x80\x99s cross-referencing features, allowing the format of references to be determined automatically according to the type of reference.  The formats used may be customised in the preamble of a document; babelbabel support is available (though the choice of languages remains limited: currently Danish, Dutch, English, French, German, Italian, Norwegian, Russian, Spanish and Ukranian).  The package also offers a means of referencing a list of references, each formatted according to its type.  In such lists, it can collapse sequences of numerically-consecutive labels to a reference range.")
+  (license (license:fsf-free "file://cleveref.sty"))))
