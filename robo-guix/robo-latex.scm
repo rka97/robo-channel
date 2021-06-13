@@ -177,3 +177,36 @@
     (description
      "This package can disable all hyphenation or enable hyphenation of non-alphabetics or monospaced fonts.  The package can also enable hyphenation within â\x80\x98wordsâ\x80\x99 that contain non-alphabetic characters (e.g., that include underscores), and hyphenation of text typeset in monospaced (e.g., cmtt) fonts.")
     (license (license:fsf-free "file://hyphenat.sty"))))
+
+(define-public texlive-latex-tcolorbox
+  (package
+    (name "texlive-latex-tcolorbox")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/tcolorbox"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0j43pdpyznlfkafy22c1m0mdasv008pwwjs0axx2zr8p5xz21rxs"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/tcolorbox")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+    (home-page "http://www.ctan.org/pkg/tcolorbox")
+    (synopsis
+     "Coloured boxes, for LaTeX examples and theorems, etc")
+    (description
+     "This package provides an environment for coloured and framed text boxes with a heading line.  Optionally, such a box may be split in an upper and a lower part; thus the package may be used for the setting of LaTeX examples where one part of the box displays the source code and the other part shows the output.  Another common use case is the setting of theorems.  The package supports saving and reuse of source code and text parts.  The package depends on the pgfpgf, verbatimverbatim, environenviron, and etoolboxetoolbox packages.")
+  (license (license:fsf-free "file://tcolorbox.sty"))))
