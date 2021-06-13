@@ -257,7 +257,7 @@
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "18afx332iizlsa2d3rzxgk09vi3dyg088jw2igyqdbvqmiibvma4"))))
+                "1xciy3r8x2b1qn76bgsin7mp7mqjcnl93mvqpzb9g585777c3rjn"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
