@@ -46,3 +46,36 @@
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
+
+
+(define-public texlive-latex-lineno
+  (package
+    (name "texlive-latex-lineno")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/lineno"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1r3gr09a9f9lyb27w92y7p64crnxy75n2rwnr1mprcc825cw4a0m"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/lineno")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+    (home-page "http://www.ctan.org/pkg/lineno")
+    (synopsis "Line numbers on paragraphs")
+    (description
+    "Adds line numbers to selected paragraphs with reference possible through the LaTeX \\ref and \\pageref cross reference mechanism.  Line numbering may be extended to footnote lines, using the fnlinenofnlineno package.")
+    (license (license:fsf-free "file://lineno.sty"))))
