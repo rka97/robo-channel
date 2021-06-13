@@ -79,3 +79,36 @@
     (description
     "Adds line numbers to selected paragraphs with reference possible through the LaTeX \\ref and \\pageref cross reference mechanism.  Line numbering may be extended to footnote lines, using the fnlinenofnlineno package.")
     (license (license:fsf-free "file://lineno.sty"))))
+
+(define-public texlive-latex-import
+  (package
+    (name "texlive-latex-import")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/import"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1r47bcbr7rxy57am89pn6dg9b4by4i6yvzi2albv2gnlprrjlxb4"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/import")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+      (home-page "http://www.ctan.org/pkg/import")
+  (synopsis
+    "Establish input relative to a directory")
+  (description
+    "The commands \\import{full_path}{file} and \\subimport{path_extension}{file} set up input through standard LaTeX mechanisms (\\input, \\include and \\includegraphics) to load files relative to the \\import-ed directory.  There are also \\includefrom, \\subincludefrom, and * variants of the commands.")
+    (license (license:fsf-free "file://import.sty"))))
