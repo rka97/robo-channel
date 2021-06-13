@@ -1,5 +1,4 @@
-(define-module (robo-guix latex)
-  #:use-module (guix packages tex)
+(define-module (robo-guix robo-latex)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -47,36 +46,3 @@
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
-
-
-(define-public texlive-latex-lineno
-  (package
-    (name "texlive-latex-lineno")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/lineno"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/lineno")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/lineno")
-    (synopsis "Adds line numbers to selected paragraphs with reference possible through the LATEX \ref and \pageref cross reference mechanism.")
-    (description
-     "The LaTeX package lineno.sty provides line numbers on paragraphs.
-After TeX has broken a paragraph into lines there will be line numbers
-attached to them, with the possibility to make references through the
-LaTeX \ref, \pageref cross reference mechanism.")
-    (license (license:fsf-free "file://lineno.sty"))))
