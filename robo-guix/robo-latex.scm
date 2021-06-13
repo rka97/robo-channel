@@ -112,3 +112,36 @@
   (description
     "The commands \\import{full_path}{file} and \\subimport{path_extension}{file} set up input through standard LaTeX mechanisms (\\input, \\include and \\includegraphics) to load files relative to the \\import-ed directory.  There are also \\includefrom, \\subincludefrom, and * variants of the commands.")
     (license (license:fsf-free "file://import.sty"))))
+
+(define-public texlive-latex-mathtools
+  (package
+    (name "texlive-latex-mathtools")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/mathtools"))
+                    (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0rqygi53flzxm7lhh5gwybj700azzff8bcq10hbxrzvayp558byc"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((target (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/latex/mathtools")))
+           (mkdir-p target)
+           (copy-recursively (assoc-ref %build-inputs "source") target)
+           #t))))
+    (home-page "http://www.ctan.org/pkg/mathtools")
+    (synopsis
+     "Mathematical tools to use with amsmath")
+    (description
+     "Mathtools provides a series of packages designed to enhance the appearance of documents containing a lot of mathematics.  The main backbone is amsmath, so those unfamiliar with this required part of the LaTeX system will probably not find the packages very useful.  Mathtools provides many useful tools for mathematical typesetting.  It is based on amsmathamsmath and fixes various deficiencies of amsmath and standard LaTeX.  It provides:  Extensible symbols, such as brackets, arrows, harpoons, etc.;  Various symbols such as \\coloneqq (:=);  Easy creation of new tag forms;  Showing equation numbers only for referenced equations;  Extensible arrows, harpoons and hookarrows;  Starred versions of the amsmath matrix environments for specifying the column alignment;  More building blocks: multlined, cases-like environments, new gathered environments;  Maths versions of \\makebox, \\llap, \\rlap etc.;  Cramped math styles; and more...  Mathtools requires mhsetupmhsetup.")
+    (license (license:fsf-free "file://mathtools.sty"))))
